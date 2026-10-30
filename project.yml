@@ -1,0 +1,18 @@
+name: KidLockTV
+options:
+  bundleIdPrefix: com.kidlock
+  deploymentTarget:
+    tvOS: "15.0"
+targets:
+  KidLockTV:
+    type: application
+    platform: tvOS
+    sources:
+      - path: KidLockScreensaverApp.swift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.kidlock.screensaver
+        INFOPLIST_KEY_UIUserInterfaceStyle: Dark
+        GENERATE_INFOPLIST_FILE: YES
+        CURRENT_PROJECT_VERSION: 1
+        MARKETING_VERSION: 1.0.0
