@@ -1,0 +1,41 @@
+name: Build tvOS IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build-ipa:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate Xcode Project via XcodeGen
+        run: |
+          brew install xcodegen
+          xcodegen generate
+
+      - name: Build Unsigned tvOS App
+        run: |
+          xcodebuild -project KidLockTV.xcodeproj \
+            -scheme KidLockTV \
+            -configuration Release \
+            -sdk appletvos \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Package into IPA
+        run: |
+          mkdir -p Payload
+          cp -r build/Build/Products/Release-appletvos/KidLockTV.app Payload/
+          zip -r KidLockTV.ipa Payload
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: KidLockTV-tvOS-IPA
+          path: KidLockTV.ipa
